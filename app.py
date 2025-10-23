@@ -37,14 +37,23 @@ with tab1:
     
     # --- PARTIE DROITE : SLIDER + GRAPHIQUE ---
     with col2:  
-        #Slider des années
-        start_year, end_year = st.slider(
-            "Sélectionne une plage d'années",
-            min_value=years[0],
-            max_value=years[-1],
-            value=(2020, 2024),
-            key="slider_tab1"
-        )      
+        departure, slider = st.columns([1, 2])
+        with departure:
+            type_data = st.selectbox(
+                    "Sélectionne Arrivées ou Départs",
+                    options=["Arrivées", "Départs"],
+                    index=0
+            )
+        
+        with slider:
+            #Slider des années
+            start_year, end_year = st.slider(
+                "Sélectionne une plage d'années",
+                min_value=years[0],
+                max_value=years[-1],
+                value=(2020, 2024),
+                key="slider_tab1"
+            )      
                 
         # Affichage du graphique en barres des top aéroports pour la France
         data_vols_aeroport["YEAR"] = data_vols_aeroport["TIME"].str[:4].astype(int)
