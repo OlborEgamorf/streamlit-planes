@@ -1,5 +1,6 @@
 import plotly.express as px
 import streamlit as st
+import plotly.graph_objects as go
 
 def line_chart(data, pays, colonne_x, colonne_y1, titre=None):
     """
@@ -20,34 +21,45 @@ def line_chart(data, pays, colonne_x, colonne_y1, titre=None):
         Titre du graphique
     """
 
-    # Filtrage du pays
+# Filtrage du pays
     df = data[data["COUNTRY_NAME"] == pays]
 
     # Calcul de la moyenne globale
     moyenne_globale = data[colonne_y1].mean()
 
-    # Création du graphique principal
-    fig = px.line(
-        df,
-        x=colonne_x,
-        y=colonne_y1,
-        title=titre or f"Évolution de {colonne_y1} pour {pays}",
-        labels={colonne_x: "Années", colonne_y1: "Valeur"}
+    # --- Création du graphique avec graph_objects pour plus de contrôle ---
+    fig = go.Figure()
+
+    # Courbe du pays
+    fig.add_trace(
+        go.Scatter(
+            x=df[colonne_x],
+            y=df[colonne_y1],
+            mode="lines",
+            name=f"{colonne_y1} ({pays})",
+            line=dict(color="lightblue", width=2)
+        )
     )
 
-    # Ajout de la ligne de moyenne globale
-    fig.add_hline(
-        y=moyenne_globale,
-        line_dash="dash",
-        line_color="red",
-        annotation_text=f"Moyenne globale ({moyenne_globale:.2f})",
-        annotation_position="bottom right"
+    # Ligne de moyenne globale
+    fig.add_trace(
+        go.Scatter(
+            x=[df[colonne_x].min(), df[colonne_x].max()],
+            y=[moyenne_globale, moyenne_globale],
+            mode="lines",
+            name="Moyenne globale",
+            line=dict(color="red", dash="dash")
+        )
     )
 
-    # Personnalisation du graphique
+    # --- Mise en forme ---
     fig.update_layout(
+        title=titre or f"Évolution de {colonne_y1} pour {pays}",
+        xaxis_title="Années",
+        yaxis_title="Valeur",
         template="plotly_white",
-        legend_title="",
+        legend_title="Légende",
     )
 
+    # Affichage dans Streamlit
     st.plotly_chart(fig, use_container_width=True)
