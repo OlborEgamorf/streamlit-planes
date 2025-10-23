@@ -3,3 +3,5 @@ streamlit
 plotly
 numpy
 ipykernel
+geopandas
+nbformat>=4.2.0
