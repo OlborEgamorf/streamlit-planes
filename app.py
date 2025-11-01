@@ -87,7 +87,7 @@ with tab1:
         ]
 
         # On affiche le graphique pour la France VS l'Europe
-        line_chart(filtered_data_vols_pays, country_name, "TIME", "VALUE", f"Évolution des vols pour {country_name}")
+        line_chart(filtered_data_vols_pays, country_name, "TIME", "ARRIVAL_VALUE", f"Évolution des vols pour {country_name}")
 
 ### ---------------- TAB 2 ANALYSE EXPLORATOIRE -------------------------------------------------------    
 with tab2:

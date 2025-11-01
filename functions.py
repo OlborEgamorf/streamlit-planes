@@ -22,12 +22,12 @@ def top_airports_by_country(data, countryID, top_n=5):
     # Filtrer les données pour le pays spécifié
     country_data = data[data["COUNTRY_ID"] == countryID]
 
-    # S'assurer que la colonne VALUE est numérique
-    country_data["VALUE"] = pd.to_numeric(country_data["VALUE"], errors="coerce")
+    # S'assurer que la colonne ARRIVAL_VALUE est numérique
+    country_data["ARRIVAL_VALUE"] = pd.to_numeric(country_data["ARRIVAL_VALUE"], errors="coerce")
 
     # Calculer le total de vols par aéroport
     airport_counts = (
-        country_data.groupby("AIRPORT_NAME")["VALUE"]
+        country_data.groupby("AIRPORT_NAME")["ARRIVAL_VALUE"]
         .sum()
         .sort_values(ascending=False)
         .head(top_n)
