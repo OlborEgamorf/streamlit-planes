@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import map
 from linechart import *
 from functions import *
 from barchart import *
@@ -74,7 +75,8 @@ with tab1:
             'lat': [48.8566, 52.5200, 41.9028, 40.4168],  # Paris, Berlin, Rome, Madrid
             'lon': [2.3522, 13.4050, 12.4964, -3.7038]
         })
-        st.map(data, zoom=2.5)
+
+        map.displayMap()
     
         ##### Graphique Line chart Pays VS Moyenne Globale
         # Conversion de la colonne TIME en entier
@@ -111,9 +113,11 @@ with tab2:
                 options=data_vols_aeroport[data_vols_aeroport["COUNTRY_ID"] == countryID]["AIRPORT_NAME"].unique(),
                 index=0
             )
+        
 
-
-        #Slider des années
+    # --- PARTIE DROITE : SLIDER + GRAPHIQUE ---
+    with col2:        
+        # Slider au-dessus du graphique
         start_year, end_year = st.slider(
             "Sélectionne une plage d'années",
             min_value=years[0],
