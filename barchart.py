@@ -2,7 +2,7 @@ from functions import *
 import plotly.express as px
 import streamlit as st
 
-def barchart_top_aeroport(data, countryID,departure, top_n=5, titre=None):
+def barchart_top_aeroport(data, countryID, departure, top_n=5, titre=None):
     """
     Affiche un graphique en barres des top N aéroports les plus fréquentés pour un pays donné.
 
@@ -20,21 +20,26 @@ def barchart_top_aeroport(data, countryID,departure, top_n=5, titre=None):
         Le titre du graphique.
     """
 
-    # Obtenir les top N aéroports
-    top_airports_df = top_airports_by_country(data, countryID, top_n, departure)
+    print(countryID)
+    if countryID is None:
+        st.write("CHOISIR")
+    
+    else:
+        # Obtenir les top N aéroports
+        top_airports_df = top_airports_by_country(data, countryID, top_n, departure)
 
-    # Créer le graphique en barres
-    fig = px.bar(
-        top_airports_df,
-        x="AIRPORT_NAME",
-        y="TOTAL_FLIGHTS",
-        title=titre or f"Top {top_n} Aéroports les plus fréquentés pour {countryID}",
-        labels={"AIRPORT_NAME": "Aéroport", "TOTAL_FLIGHTS": "Nombre total de vols"},
-        color_discrete_sequence=["steelblue"] 
-    )
+        # Créer le graphique en barres
+        fig = px.bar(
+            top_airports_df,
+            x="AIRPORT_NAME",
+            y="TOTAL_FLIGHTS",
+            title=titre or f"Top {top_n} Aéroports les plus fréquentés pour {countryID}",
+            labels={"AIRPORT_NAME": "Aéroport", "TOTAL_FLIGHTS": "Nombre total de vols"},
+            color_discrete_sequence=["steelblue"] 
+        )
 
-    # Afficher le graphique dans Streamlit
-    st.plotly_chart(fig, use_container_width=True)
+        # Afficher le graphique dans Streamlit
+        st.plotly_chart(fig, width="stretch")
 
 
 def double_barChart(data, countryID, aeroport_name, titre=None):
@@ -100,4 +105,4 @@ def double_barChart(data, countryID, aeroport_name, titre=None):
     )
     
     # 7. Affichage
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")

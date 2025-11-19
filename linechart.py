@@ -63,7 +63,7 @@ def line_chart(data, pays, colonne_x, departure, titre=None):
     )
 
     # Affichage dans Streamlit
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
 
 def double_line_chart(data, idpays, aeroport, colonne_x, titre=None):
@@ -116,4 +116,4 @@ def double_line_chart(data, idpays, aeroport, colonne_x, titre=None):
     )
 
     # Affichage dans Streamlit
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
