@@ -64,3 +64,27 @@ def get_ID_Pays(data, country_name):
         return country_row.iloc[0]["COUNTRY_ID"]
     else:
         return None
+    
+    
+def get_name_Pays(data, countryID):
+    """
+    Retourne le nom du pays donné son ID.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        Le DataFrame contenant les données des vols.
+    countryID : str
+        L'ID du pays (ex: 'FR').
+
+    Returns
+    -------
+    str
+        Le nom du pays correspondant.
+    """
+
+    country_row = data[data["COUNTRY_ID"] == countryID]
+    if not country_row.empty:
+        return country_row.iloc[0]["COUNTRY_NAME"]
+    else:
+        return None

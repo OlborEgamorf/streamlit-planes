@@ -13,6 +13,14 @@ st.markdown("<style> .st-emotion-cache-zy6yx3 {padding-top: 0rem; padding-bottom
 # Import des données
 data_vols_pays = pd.read_csv("data/vols_par_pays_traite.csv")
 data_vols_aeroport = pd.read_csv("data/vols_par_aeroport_traite.csv")
+data_passagers_aeroport = pd.read_csv("data/passagers_par_aeroport_traite.csv")
+data_passagers_pays = pd.read_csv("data/passagers_par_pays_traite.csv")
+data_co2_pays = pd.read_csv("data/co2_par_pays.csv")
+
+# paramètres généraux
+country_name = "France"
+countryIDPays = get_ID_Pays(data_vols_pays, country_name)
+
 
 # -------------------------------------------------------
 # Settings
@@ -29,7 +37,7 @@ years = list(range(2015, 2026))
 # Barre d'onglets
 tab1, tab2 = st.tabs(["Analyse globale", "Analyse exploratoire"])
 
-country_name = "France"
+
 
 with tab1:
     # Création des deux colonnes
@@ -63,16 +71,35 @@ with tab1:
         filtered_data_vols_aeroport = data_vols_aeroport[
             (data_vols_aeroport["YEAR"] >= start_year) & (data_vols_aeroport["YEAR"] <= end_year)
         ]
+        
+        
+        data_co2_pays = data_co2_pays.sort_values("YEAR")
 
+        # Puis ton filtrage
+        filtered_data_co2_pays = data_co2_pays[
+            (data_co2_pays["YEAR"] >= start_year) & (data_co2_pays["YEAR"] <= end_year)
+        ]
+        
+        
 
-        countryID = get_ID_Pays(data_vols_pays, country_name)
         barchart_top_aeroport(
             filtered_data_vols_aeroport,
-            countryID,
+            countryIDPays,
             type_data,
             top_n=5,
-            titre=f"Top 5 Aéroports les plus fréquentés en {country_name}" # Utiliser la variable du selectbox
-        )        
+            titre=f"Top 5 Aéroports les plus fréquentés en {country_name}"
+        )       
+        
+        #line_chart(data_passagers_pays,country_name,"TIME", "ARRIVAL_VALUE" if type_data == "Arrivées" else "DEPARTURE_VALUE",f"Évolution des vols pour {country_name} ({type_data})")
+        
+        line_chart(
+            filtered_data_co2_pays,
+            country_name,
+            "YEAR",
+            "CO2_EMISSIONS_TONNES",
+            f"Évolution des émissions de CO2 pour {country_name}"
+        )
+            
     # --- PARTIE GAUCHE : CARTE ---
     with col1:
         data = pd.DataFrame({
@@ -96,6 +123,7 @@ with tab1:
 
         # On affiche le graphique pour la France VS l'Europe
         line_chart(filtered_data_vols_pays, country_name, "TIME", column_name_line, f"Évolution des vols pour {country_name}")
+                
 
 ### ---------------- TAB 2 ANALYSE EXPLORATOIRE -------------------------------------------------------    
 with tab2:
@@ -106,23 +134,23 @@ with tab2:
         col_country, col_airport = st.columns(2)
 
         with col_country:
-            country_name = st.selectbox(
+            country_name_select = st.selectbox(
                 "Sélectionne un pays",
                 options=data_vols_pays["COUNTRY_NAME"].unique(),
                 index=list(data_vols_pays["COUNTRY_NAME"].unique()).index("France")
             )
-            countryID = get_ID_Pays(data_vols_pays, country_name)
+            countryIDselect = get_ID_Pays(data_vols_pays, country_name_select)
 
         with col_airport:
-            aeroport_name = st.selectbox(
+            aeroport_name_select = st.selectbox(
                 "Sélectionne un aéroport",
-                options=data_vols_aeroport[data_vols_aeroport["COUNTRY_ID"] == countryID]["AIRPORT_NAME"].unique(),
+                options=data_vols_aeroport[data_vols_aeroport["COUNTRY_ID"] == countryIDselect]["AIRPORT_NAME"].unique(),
                 index=0
             )
 
 
         #Slider des années
-        start_year, end_year = st.slider(
+        start_year_page2, end_year_page2 = st.slider(
             "Sélectionne une plage d'années",
             min_value=years[0],
             max_value=years[-1],
@@ -131,7 +159,20 @@ with tab2:
         )
         
         
+        # Affichage du graphique en barres des top aéroports pour la France
+        data_passagers_aeroport["YEAR"] = data_passagers_aeroport["TIME"].str[:4].astype(int)
+        data_passagers_aeroport = data_passagers_aeroport.sort_values("TIME")
+
+        # Puis ton filtrage
+        data_passagers_aeroport = data_passagers_aeroport[
+            (data_passagers_aeroport["YEAR"] >= start_year_page2) & (data_passagers_aeroport["YEAR"] <= end_year_page2)
+        ]
         
+        double_barChart(
+            data_passagers_aeroport,
+            countryIDselect,
+            aeroport_name_select
+        )
     
     with col1:
         data = pd.DataFrame({
@@ -139,3 +180,14 @@ with tab2:
             'lon': [2.3522, 13.4050, 12.4964, -3.7038]
         })
         st.map(data, zoom=2.5)
+        
+        # Affichage du graphique en barres des top aéroports pour la France
+        data_vols_aeroport["YEAR"] = data_vols_aeroport["TIME"].str[:4].astype(int)
+        data_vols_aeroport = data_vols_aeroport.sort_values("TIME")
+
+        # Puis ton filtrage
+        filter_data_vols_aeroport = data_vols_aeroport[
+            (data_vols_aeroport["YEAR"] >= start_year_page2) & (data_vols_aeroport["YEAR"] <= end_year_page2)
+        ]
+        
+        double_line_chart(filter_data_vols_aeroport, countryIDselect, aeroport=aeroport_name_select, colonne_x="TIME", titre=f"Évolution des Arrivées / Départs (avions) pour {aeroport_name_select}")

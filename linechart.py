@@ -1,6 +1,7 @@
 import plotly.express as px
 import streamlit as st
 import plotly.graph_objects as go
+from functions import *
 
 def line_chart(data, pays, colonne_x, departure, titre=None):
     """
@@ -20,16 +21,13 @@ def line_chart(data, pays, colonne_x, departure, titre=None):
     titre : str (optionnel)
         Titre du graphique
     """
-    
-    
 
-# Filtrage du pays
+    # Filtrage du pays
     df = data[data["COUNTRY_NAME"] == pays]
 
     # Calcul de la moyenne globale
-    moyenne_globale = data[departure].mean()
+    moyenne_par_annee = data.groupby(colonne_x)[departure].mean().reset_index()
 
-    # --- Création du graphique avec graph_objects pour plus de contrôle ---
     fig = go.Figure()
 
     # Courbe du pays
@@ -46,17 +44,71 @@ def line_chart(data, pays, colonne_x, departure, titre=None):
     # Ligne de moyenne globale
     fig.add_trace(
         go.Scatter(
-            x=[df[colonne_x].min(), df[colonne_x].max()],
-            y=[moyenne_globale, moyenne_globale],
+            x=moyenne_par_annee[colonne_x],
+            y=moyenne_par_annee[departure],
             mode="lines",
-            name="Moyenne globale",
+            name="Moyenne globale par année",
             line=dict(color="red", dash="dash")
         )
     )
 
+
     # --- Mise en forme ---
     fig.update_layout(
         title=titre or f"Évolution de {departure} pour {pays}",
+        xaxis_title="Années",
+        yaxis_title="Valeur",
+        template="plotly_white",
+        legend_title="Légende",
+    )
+
+    # Affichage dans Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def double_line_chart(data, idpays, aeroport, colonne_x, titre=None):
+    """
+    Crée un graphique linéaire avec deux courbes pour un pays donné.
+    Paramètres :
+    ------------
+    data : pd.DataFrame
+        Jeu de données contenant les colonnes nécessaires
+    idpays : int
+        ID du pays à filtrer
+    aeroport : str
+        Nom de l'aéroport à filtrer
+    colonne_x : str
+        Nom de la colonne pour l'axe des x
+    titre : str (optionnel)
+        Titre du graphique
+    """
+
+    data_pays = data[data["COUNTRY_ID"] == idpays]
+    fig = go.Figure()
+    # Courbe des arrivées
+    fig.add_trace(
+        go.Scatter(
+            x=data_pays[data_pays["AIRPORT_NAME"] == aeroport][colonne_x],
+            y=data_pays[data_pays["AIRPORT_NAME"] == aeroport]["ARRIVAL_VALUE"],
+            mode="lines",
+            name="Arrivées",
+            line=dict(color="lightblue", width=2)
+        )
+    )
+    
+    # Courbe des départs
+    fig.add_trace(
+        go.Scatter(
+            x=data_pays[data_pays["AIRPORT_NAME"] == aeroport][colonne_x],
+            y=data_pays[data_pays["AIRPORT_NAME"] == aeroport]["DEPARTURE_VALUE"],
+            mode="lines",
+            name="Départs",
+            line=dict(color="lightcoral", width=2)
+        )
+    )
+    # --- Mise en forme ---
+    fig.update_layout(
+        title=titre or f"Évolution des Arrivées et Départs pour le pays ID {idpays}",
         xaxis_title="Années",
         yaxis_title="Valeur",
         template="plotly_white",
