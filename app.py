@@ -66,6 +66,8 @@ with tab1:
                     options=["Arrivées", "Départs"],
                     index=0
             )
+
+        column_name_line = "ARRIVAL_VALUE" if type_data == "Arrivées" else "DEPARTURE_VALUE"
         
         with slider:
             #Slider des années
@@ -89,9 +91,9 @@ with tab1:
 
     with col1:
 
-        country_name = map.displayMap(filtered_data_vols_pays, "ARRIVAL_VALUE", country_name)
+        country_name = map.displayMap(filtered_data_vols_pays, column_name_line, country_name)
         # On affiche le graphique pour la France VS l'Europe
-        line_chart(filtered_data_vols_pays, country_name, "TIME", "ARRIVAL_VALUE", f"Évolution des vols pour {country_name}")
+        line_chart(filtered_data_vols_pays, country_name, "TIME", column_name_line, f"Évolution des vols pour {country_name}")
 
 
     
@@ -134,30 +136,6 @@ with tab1:
             "CO2_EMISSIONS_TONNES",
             f"Évolution des émissions de CO₂ liées à l’aviation en {country_name}"
         )
-            
-    # --- PARTIE GAUCHE : CARTE ---
-    with col1:
-        data = pd.DataFrame({
-            'lat': [48.8566, 52.5200, 41.9028, 40.4168],  # Paris, Berlin, Rome, Madrid
-            'lon': [2.3522, 13.4050, 12.4964, -3.7038]
-        })
-        st.map(data, zoom=2.5)
-    
-        ##### Graphique Line chart Pays VS Moyenne Globale
-        # Conversion de la colonne TIME en entier
-        data_vols_pays["YEAR"] = data_vols_pays["TIME"].str[:4].astype(int)
-        data_vols_pays = data_vols_pays.sort_values("TIME")
-
-        # Puis ton filtrage
-        filtered_data_vols_pays = data_vols_pays[
-            (data_vols_pays["YEAR"] >= start_year) & (data_vols_pays["YEAR"] <= end_year)
-        ]
-        
-        column_name_line = "ARRIVAL_VALUE" if type_data == "Arrivées" else "DEPARTURE_VALUE"
-
-
-        # On affiche le graphique pour la France VS l'Europe
-        line_chart(filtered_data_vols_pays, country_name, "TIME", column_name_line, f"Évolution des vols pour {country_name}")
                 
 
 ### ---------------- TAB 2 ANALYSE EXPLORATOIRE -------------------------------------------------------    
