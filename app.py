@@ -32,12 +32,26 @@ st.markdown(f"<style >.reportview-container .main .block-container{{max-width: {
 st.markdown("<h1 style='text-align: center; margin:0px;'>Streamlit Planes - Flight Data Analysis</h1>", unsafe_allow_html=True)
 
 # Générer automatiquement une liste d'années
-years = list(range(2015, 2026))  
+years = list(range(2000, 2025))  
 
 # Barre d'onglets
-tab1, tab2 = st.tabs(["Analyse globale", "Analyse exploratoire"])
+tab0, tab1, tab2 = st.tabs(["Accueil","Analyse globale", "Analyse exploratoire"])
 
-
+with tab0:
+    st.markdown("## Bienvenue dans l'application Streamlit Planes")
+    st.markdown("""
+    Cette application permet d'analyser les données de vols internationaux, y compris les arrivées, départs, passagers et émissions de CO₂.
+    
+    ### Instructions :
+    - Utilisez l'onglet **Analyse globale** pour visualiser les tendances des vols et des émissions de CO₂ pour un pays spécifique.
+    - Utilisez l'onglet **Analyse exploratoire** pour explorer les données par aéroport et comparer les arrivées et départs.
+    
+    ### Sources de données :
+    - Données de vols internationaux
+    - Données d'émissions de CO₂ liées à l'aviation
+    
+    Amusez-vous bien en explorant les données !
+    """)
 
 with tab1:
     # Création des deux colonnes
@@ -97,7 +111,7 @@ with tab1:
             country_name,
             "YEAR",
             "CO2_EMISSIONS_TONNES",
-            f"Évolution des émissions de CO2 pour {country_name}"
+            f"Évolution des émissions de CO₂ liées à l’aviation en {country_name}"
         )
             
     # --- PARTIE GAUCHE : CARTE ---
