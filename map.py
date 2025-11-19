@@ -1,24 +1,33 @@
 import streamlit as st
-import pandas as pd
 import geopandas as gpd
 import plotly.express as px
-import plotly.graph_objects as go
-import folium
-from streamlit_folium import st_folium
 
-
-def displayMap():
+def displayMap(data, col, country):
 
     
-    
-    m = folium.Map([48.59942120882304, 15.710549454957945], tiles="cartodbpositron", zoom_start=4)
-    folium.GeoJson("data/europe.geojson",
-                   style_function=lambda feature: {
-                        "fillColor": "#ffff0000",
-                        "color": "black",
-                        "weight": 0.5,
-                    },
-    ).add_to(m)
-    # m.fit_bounds([[36.61683092620905, -10.367651872713363], [71.15207057472252, 46.33659126976786]])
 
-    st_data = st_folium(m)
+    # data["FIPS"] = data["COUNTRY_ID"]
+
+    data = data[data["YEAR"] == 2022]
+
+    fig = px.choropleth(data, geojson=gpd.read_file("data/europe.geojson"), locations='COUNTRY_ID', color=col,
+                            color_continuous_scale="Viridis",
+                            scope="europe",
+                            labels={col:'AH'},
+                            featureidkey='properties.ISO2'
+                            )
+    fig.update_layout({"margin":{"r":0,"t":0,"l":0,"b":0}, "plot_bgcolor":"rgba(0, 0, 0, 0)", "paper_bgcolor":"rgba(0, 0, 0, 0)"})
+    fig.update_geos(fitbounds="locations", visible=False) 
+
+    event = st.plotly_chart(fig, on_select="rerun", selection_mode=["points"])
+
+    # st.write(event)
+    points = event["selection"].get("points", [])
+
+    if points:
+        first_point = points[0]
+        country = first_point["properties"].get("NAME", None)
+    else:
+        country = "Italy"
+    
+    return country
