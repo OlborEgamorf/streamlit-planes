@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import map
 from linechart import *
 from functions import *
 from barchart import *
@@ -56,9 +57,8 @@ with tab0:
 with tab1:
     # Création des deux colonnes
     col1, col2 = st.columns([1, 1]) 
-    
-    # --- PARTIE DROITE : SLIDER + GRAPHIQUE ---
-    with col2:  
+
+    with col2:
         departure, slider = st.columns([1, 2])
         with departure:
             type_data = st.selectbox(
@@ -75,7 +75,28 @@ with tab1:
                 max_value=years[-1],
                 value=(2020, 2024),
                 key="slider_tab1"
-            )      
+            )
+    
+    ##### Graphique Line chart Pays VS Moyenne Globale
+    # Conversion de la colonne TIME en entier
+    data_vols_pays["YEAR"] = data_vols_pays["TIME"].str[:4].astype(int)
+    data_vols_pays = data_vols_pays.sort_values("TIME")
+
+    # Puis ton filtrage
+    filtered_data_vols_pays = data_vols_pays[
+        (data_vols_pays["YEAR"] >= start_year) & (data_vols_pays["YEAR"] <= end_year)
+    ]
+
+    with col1:
+
+        country_name = map.displayMap(filtered_data_vols_pays, "ARRIVAL_VALUE", country_name)
+        # On affiche le graphique pour la France VS l'Europe
+        line_chart(filtered_data_vols_pays, country_name, "TIME", "ARRIVAL_VALUE", f"Évolution des vols pour {country_name}")
+
+
+    
+    # --- PARTIE DROITE : SLIDER + GRAPHIQUE ---
+    with col2:     
                 
         # Affichage du graphique en barres des top aéroports pour la France
         data_vols_aeroport["YEAR"] = data_vols_aeroport["TIME"].str[:4].astype(int)
@@ -161,9 +182,11 @@ with tab2:
                 options=data_vols_aeroport[data_vols_aeroport["COUNTRY_ID"] == countryIDselect]["AIRPORT_NAME"].unique(),
                 index=0
             )
+        
 
-
-        #Slider des années
+    # --- PARTIE DROITE : SLIDER + GRAPHIQUE ---
+    with col2:        
+        # Slider au-dessus du graphique
         start_year_page2, end_year_page2 = st.slider(
             "Sélectionne une plage d'années",
             min_value=years[0],
