@@ -1,6 +1,6 @@
 import pandas as pd
 
-def top_airports_by_country(data, countryID, top_n=5):
+def top_airports_by_country(data, countryID, top_n=5, departure ="Arrivées"):
     """
     Retourne les top N aéroports les plus fréquentés pour un pays donné.
 
@@ -12,7 +12,8 @@ def top_airports_by_country(data, countryID, top_n=5):
         Le code du pays à filtrer (ex: 'FR').
     top_n : int
         Le nombre d'aéroports à retourner.
-
+    departure : str
+        Le type de vol à filtrer (ex: 'Arrivées' ou 'Départs').
     Returns
     -------
     pd.DataFrame
@@ -22,12 +23,13 @@ def top_airports_by_country(data, countryID, top_n=5):
     # Filtrer les données pour le pays spécifié
     country_data = data[data["COUNTRY_ID"] == countryID]
 
-    # S'assurer que la colonne ARRIVAL_VALUE est numérique
-    country_data["ARRIVAL_VALUE"] = pd.to_numeric(country_data["ARRIVAL_VALUE"], errors="coerce")
-
     # Calculer le total de vols par aéroport
+    column_name = "ARRIVAL_VALUE" if departure == "Arrivées" else "DEPARTURE_VALUE"
+    country_data[column_name] = pd.to_numeric(country_data[column_name], errors="coerce")
+    
+    
     airport_counts = (
-        country_data.groupby("AIRPORT_NAME")["ARRIVAL_VALUE"]
+        country_data.groupby("AIRPORT_NAME")[column_name]
         .sum()
         .sort_values(ascending=False)
         .head(top_n)

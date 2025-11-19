@@ -29,7 +29,7 @@ years = list(range(2015, 2026))
 # Barre d'onglets
 tab1, tab2 = st.tabs(["Analyse globale", "Analyse exploratoire"])
 
-country_name = "Italy"
+country_name = "France"
 
 with tab1:
     # Création des deux colonnes
@@ -66,8 +66,13 @@ with tab1:
 
 
         countryID = get_ID_Pays(data_vols_pays, country_name)
-        barchart_top_aeroport(filtered_data_vols_aeroport,countryID,top_n=5, titre=f"Top 5 Aéroports les plus fréquentés en {country_name}")
-        
+        barchart_top_aeroport(
+            filtered_data_vols_aeroport,
+            countryID,
+            type_data,
+            top_n=5,
+            titre=f"Top 5 Aéroports les plus fréquentés en {country_name}" # Utiliser la variable du selectbox
+        )        
     # --- PARTIE GAUCHE : CARTE ---
     with col1:
         data = pd.DataFrame({
@@ -85,9 +90,12 @@ with tab1:
         filtered_data_vols_pays = data_vols_pays[
             (data_vols_pays["YEAR"] >= start_year) & (data_vols_pays["YEAR"] <= end_year)
         ]
+        
+        column_name_line = "ARRIVAL_VALUE" if type_data == "Arrivées" else "DEPARTURE_VALUE"
+
 
         # On affiche le graphique pour la France VS l'Europe
-        line_chart(filtered_data_vols_pays, country_name, "TIME", "ARRIVAL_VALUE", f"Évolution des vols pour {country_name}")
+        line_chart(filtered_data_vols_pays, country_name, "TIME", column_name_line, f"Évolution des vols pour {country_name}")
 
 ### ---------------- TAB 2 ANALYSE EXPLORATOIRE -------------------------------------------------------    
 with tab2:
@@ -121,6 +129,8 @@ with tab2:
             value=(2020, 2024),
             key="slider_tab2"
         )
+        
+        
         
     
     with col1:

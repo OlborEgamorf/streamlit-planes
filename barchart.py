@@ -2,7 +2,7 @@ from functions import *
 import plotly.express as px
 import streamlit as st
 
-def barchart_top_aeroport(data, countryID, top_n=5, titre=None):
+def barchart_top_aeroport(data, countryID,departure, top_n=5, titre=None):
     """
     Affiche un graphique en barres des top N aéroports les plus fréquentés pour un pays donné.
 
@@ -12,6 +12,8 @@ def barchart_top_aeroport(data, countryID, top_n=5, titre=None):
         Le DataFrame contenant les données des vols.
     countryID : str
         Le code du pays à filtrer (ex: 'FR').
+    departure : str
+        Le type de vol à filtrer (ex: 'Arrivées' ou 'Départs').
     top_n : int
         Le nombre d'aéroports à afficher.
     titre : str (optionnel)
@@ -19,7 +21,7 @@ def barchart_top_aeroport(data, countryID, top_n=5, titre=None):
     """
 
     # Obtenir les top N aéroports
-    top_airports_df = top_airports_by_country(data, countryID, top_n)
+    top_airports_df = top_airports_by_country(data, countryID, top_n, departure)
 
     # Créer le graphique en barres
     fig = px.bar(
@@ -50,4 +52,6 @@ def double_barChart(data, countryID, aeroport_name, titre=None):
         Le titre du graphique.
 
     """
+    
+    
     

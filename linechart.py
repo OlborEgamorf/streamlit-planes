@@ -2,7 +2,7 @@ import plotly.express as px
 import streamlit as st
 import plotly.graph_objects as go
 
-def line_chart(data, pays, colonne_x, colonne_y1, titre=None):
+def line_chart(data, pays, colonne_x, departure, titre=None):
     """
     Crée un graphique linéaire pour un pays donné avec une ligne horizontale
     représentant la moyenne globale.
@@ -15,17 +15,19 @@ def line_chart(data, pays, colonne_x, colonne_y1, titre=None):
         Nom du pays à filtrer
     colonne_x : str
         Nom de la colonne pour l'axe des x
-    colonne_y1 : str
-        Nom de la variable à représenter
+    departure : str
+        Nom de la colonne pour l'axe des y
     titre : str (optionnel)
         Titre du graphique
     """
+    
+    
 
 # Filtrage du pays
     df = data[data["COUNTRY_NAME"] == pays]
 
     # Calcul de la moyenne globale
-    moyenne_globale = data[colonne_y1].mean()
+    moyenne_globale = data[departure].mean()
 
     # --- Création du graphique avec graph_objects pour plus de contrôle ---
     fig = go.Figure()
@@ -34,9 +36,9 @@ def line_chart(data, pays, colonne_x, colonne_y1, titre=None):
     fig.add_trace(
         go.Scatter(
             x=df[colonne_x],
-            y=df[colonne_y1],
+            y=df[departure],
             mode="lines",
-            name=f"{colonne_y1} ({pays})",
+            name=f"{departure} ({pays})",
             line=dict(color="lightblue", width=2)
         )
     )
@@ -54,7 +56,7 @@ def line_chart(data, pays, colonne_x, colonne_y1, titre=None):
 
     # --- Mise en forme ---
     fig.update_layout(
-        title=titre or f"Évolution de {colonne_y1} pour {pays}",
+        title=titre or f"Évolution de {departure} pour {pays}",
         xaxis_title="Années",
         yaxis_title="Valeur",
         template="plotly_white",
