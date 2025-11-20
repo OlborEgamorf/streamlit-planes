@@ -117,3 +117,59 @@ def double_line_chart(data, idpays, aeroport, colonne_x, titre=None):
 
     # Affichage dans Streamlit
     st.plotly_chart(fig, width="stretch")
+    
+    
+    
+def top_n_line_chart(data, colonne_x, colonne_y="CO2_EMISSIONS_TONNES", top_n=5, titre=None, color_map=None):
+    """
+    Crée un graphique linéaire affichant l'évolution pour les TOP N pays
+    ayant la valeur totale (sur colonne_y) la plus élevée sur la période.
+
+    Paramètres :
+    ------------
+    data : pd.DataFrame
+        Jeu de données contenant les colonnes nécessaires ("COUNTRY_NAME", colonne_x, colonne_y)
+    colonne_x : str
+        Nom de la colonne pour l'axe des x (généralement 'YEAR' ou 'TIME')
+    colonne_y : str
+        Nom de la colonne de la valeur à maximiser (par défaut 'CO2_EMISSIONS_TONNES')
+    top_n : int
+        Nombre de pays à afficher (par défaut 5)
+    titre : str (optionnel)
+        Titre du graphique
+    """
+
+    top_n_countries_list = top_N(data, colonne_x, colonne_y, top_n)
+
+    # Filtrage du DataFrame original pour ne garder que ces pays
+    df_top_n = data[data["COUNTRY_NAME"].isin(top_n_countries_list)].sort_values(colonne_x)
+
+    # 2. Création du graphique avec Plotly Express (plus simple pour plusieurs lignes)
+    fig = px.line(
+        df_top_n,
+        x=colonne_x,
+        y=colonne_y,
+        color="COUNTRY_NAME", # La couleur et la légende sont gérées par le nom du pays
+        line_group="COUNTRY_NAME",
+        markers=True,
+        title=titre or f"Évolution de {colonne_y} pour les Top {top_n} pays les plus émetteurs"
+    )
+
+    # 3. Mise en forme
+    fig.update_layout(
+        xaxis_title="Années",
+        yaxis_title=colonne_y.replace("_", " ").title(),
+        template="plotly_white",
+        legend_title="Pays",
+        hovermode="x unified"
+    )
+    
+    # Améliorer l'apparence des lignes/marqueurs
+    fig.update_traces(
+        line=dict(width=2),
+        marker=dict(size=5)
+    )
+
+    # 4. Affichage dans Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+

@@ -88,3 +88,17 @@ def get_name_Pays(data, countryID):
         return country_row.iloc[0]["COUNTRY_NAME"]
     else:
         return None
+    
+    
+def top_N(data, colonne_x, colonne_y="CO2_EMISSIONS_TONNES", top_n=5, titre=None, color_map=None):
+    """
+    
+    """
+    # 1. Identifier les TOP N pays
+    # Agrégation des valeurs de la colonne_y par pays (somme sur toute la période)
+    country_totals = data.groupby("COUNTRY_NAME")[colonne_y].sum().reset_index()
+    
+    # Sélectionner les N pays avec les totaux les plus élevés
+    top_n_countries_data = country_totals.nlargest(top_n, colonne_y)
+    top_n_countries_list = top_n_countries_data["COUNTRY_NAME"].tolist()
+    return top_n_countries_list

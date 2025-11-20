@@ -106,3 +106,54 @@ def double_barChart(data, countryID, aeroport_name, titre=None):
     
     # 7. Affichage
     st.plotly_chart(fig, width="stretch")
+    
+    
+
+
+def top_n_passagers_barchart_aggregated(
+    data_passagers_aeroport, 
+    liste_pays, 
+    departure_col, 
+    titre=None,
+    color_map=None
+):
+    """
+    Agrège les données de passagers (au niveau aéroport) par pays et par année,
+    puis crée un graphique à barres montrant l'évolution du trafic pour la liste de pays fournie.
+    """
+    
+    data_agregee = data_passagers_aeroport.groupby(["COUNTRY_NAME", "YEAR"])[departure_col].sum().reset_index()
+
+    if "COUNTRY_NAME" in data_agregee.columns:
+        df_display = data_agregee[data_agregee["COUNTRY_NAME"].isin(liste_pays)].sort_values("YEAR")
+    else:
+        st.warning("Erreur: Le DataFrame d'aéroport ne contient pas les noms de pays pour la légende. Veuillez agréger par pays et ajouter la colonne COUNTRY_NAME avant l'appel.")
+        return
+
+    # 1. Création du graphique à barres (Plotly Express)
+    fig = px.bar(
+        df_display, 
+        x="YEAR", 
+        y=departure_col, 
+        color="COUNTRY_NAME", 
+        title=titre or f"Évolution du Trafic Passagers ({departure_col.replace('_VALUE', '').title()}) des Top {len(liste_pays)} Pays Émetteurs",
+        labels={
+            "YEAR": "Année",
+            departure_col: f"Total Passagers ({departure_col.replace('_VALUE', '').title()})"
+        }
+    )
+
+    # 2. Mise en forme
+    fig.update_layout(
+        xaxis_title="Année",
+        yaxis_title=f"Total Passagers ({departure_col.replace('_VALUE', '').title()})",
+        template="plotly_white",
+        legend_title="Pays (Basé sur Émissions CO₂)",
+        
+        # 🌟 CHANGEMENT ICI : 'group' affiche les barres côte à côte
+        barmode='group', 
+        
+        hovermode="x unified"
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
