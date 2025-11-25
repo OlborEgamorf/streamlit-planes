@@ -24,6 +24,8 @@ streamlit-planes/
 ├── functions.py
 ├── linechart.py
 ├── map.py
+├── data/
+    └── exploration.ipynb
 └── script/
     ├── list_iso.py
     ├── traitement_aeroport.py
@@ -45,6 +47,7 @@ streamlit-planes/
 - `app.py`: Point d'entrée principal de l'application Streamlit
 - `functions.py`: Fonctions utilitaires pour le traitement des données
 - `script/`: Scripts de traitement des données brutes
+- `exploration.ipynb`: Analyse des données traitées
 
 ### Visualisations
 - `barchart.py`: Génération des graphiques en barres
