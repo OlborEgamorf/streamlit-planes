@@ -8,6 +8,9 @@ https://www.canva.com/design/DAG0h-cJldE/1JMorxKJ5N7iW6EYFygqSg/edit?utm_content
 Lien du tableau de bord:
 https://docs.google.com/spreadsheets/d/1DRsLZsDgtIq24xRAVeFb97EdK79zu5jTzrBYcnUoi5U/edit?usp=sharing
 
+Déploiement :
+https://m2-miashs-opendata-senecaille-triozon.streamlit.app/
+
 ## Présentation générale et fonctionnement
 
 Streamlit Planes est une application interactive développée avec Streamlit pour analyser les données de l'aviation européenne. L'application permet d'explorer les flux aériens (vols et passagers), les émissions de CO₂ liées à l'aviation, et d'effectuer des comparaisons entre pays européens. Elle utilise des données officielles d'Eurostat et d'Our World in Data pour fournir une visualisation claire et interactive des tendances dans le domaine de l'aviation.
