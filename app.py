@@ -199,7 +199,7 @@ with tab2:
 
     
     
-    with col2:
+    with col1:
          # Crée deux colonnes pour les selectboxes
         col_country, col_airport = st.columns(2)
 
@@ -215,23 +215,7 @@ with tab2:
 
             airportsCountry = data_vols_aeroport[data_vols_aeroport["COUNTRY_ID"] == countryIDselect]["AIRPORT_NAME"].unique()
             airportsCountry.sort()
-
-    with col1:
-        indexAirport = map.displayMapAeroport(filtered_data_vols_pays, column_name_line, country_name, airportsCountry)
-
-    with col2:
-        with col_airport:
-
-            aeroport_name_select = st.selectbox(
-                "Sélectionne un aéroport",
-                options=airportsCountry,
-                index=indexAirport
-            )
         
-
-    # --- PARTIE DROITE : SLIDER + GRAPHIQUE ---
-    with col2:        
-        # Slider au-dessus du graphique
         start_year_page2, end_year_page2 = st.slider(
             "Sélectionne une plage d'années",
             min_value=years[0],
@@ -239,6 +223,21 @@ with tab2:
             value=(2020, 2024),
             key="slider_tab2",
         )
+
+        indexAirport = map.displayMapAeroport(filtered_data_vols_pays, column_name_line, country_name, airportsCountry)
+
+        with col_airport:
+
+            aeroport_name_select = st.selectbox(
+                "Sélectionne un aéroport",
+                options=airportsCountry,
+                index=indexAirport
+            )
+
+    # --- PARTIE DROITE : SLIDER + GRAPHIQUE ---
+    with col2:        
+        # Slider au-dessus du graphique
+        
         
         
         # Affichage du graphique en barres des top aéroports pour la France
@@ -255,10 +254,6 @@ with tab2:
             countryIDselect,
             aeroport_name_select
         )
-    
-    with col1:
-
-        
         
         # Affichage du graphique en barres des top aéroports pour la France
         data_vols_aeroport["YEAR"] = data_vols_aeroport["TIME"].str[:4].astype(int)
