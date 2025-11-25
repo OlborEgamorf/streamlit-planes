@@ -6,6 +6,7 @@ import map
 from linechart import *
 from functions import *
 from barchart import *
+from scatter import *
 
 
 st.markdown("<style> .st-emotion-cache-zy6yx3 {padding-top: 0rem; padding-bottom: 0rem;} </style>", unsafe_allow_html=True)
@@ -153,6 +154,15 @@ with tab1:
         filtered_data_vols_aeroport = data_vols_aeroport[
             (data_vols_aeroport["YEAR"] >= start_year) & (data_vols_aeroport["YEAR"] <= end_year)
         ]
+
+
+        data_passagers_pays["YEAR"] = data_passagers_pays["TIME"].str[:4].astype(int)
+        data_passagers_pays = data_passagers_pays.sort_values("TIME")
+
+        # Puis ton filtrage
+        filtered_data_passagers_pays = data_passagers_pays[
+            (data_passagers_pays["YEAR"] >= start_year) & (data_passagers_pays["YEAR"] <= end_year)
+        ]
         
         
         data_co2_pays = data_co2_pays.sort_values("YEAR")
@@ -163,7 +173,7 @@ with tab1:
         ]
         
         
-
+        column_name = "ARRIVAL_VALUE" if departure == "Arrivées" else "DEPARTURE_VALUE"
         barchart_top_aeroport(
             filtered_data_vols_aeroport,
             countryIDPays,
@@ -173,14 +183,14 @@ with tab1:
         )       
         
         #line_chart(data_passagers_pays,country_name,"TIME", "ARRIVAL_VALUE" if type_data == "Arrivées" else "DEPARTURE_VALUE",f"Évolution des vols pour {country_name} ({type_data})")
-        
-        line_chart(
-            filtered_data_co2_pays,
-            country_name,
-            "YEAR",
-            "CO2_EMISSIONS_TONNES",
-            f"Évolution des émissions de CO₂ liées à l’aviation en {country_name}"
+
+        scatterplot(filtered_data_passagers_pays,
+                    filtered_data_co2_pays,
+                    country_name,
+                    column_name,
         )
+        
+     
                 
 
 ### ---------------- TAB 2 ANALYSE EXPLORATOIRE -------------------------------------------------------    
@@ -227,7 +237,7 @@ with tab2:
             min_value=years[0],
             max_value=years[-1],
             value=(2020, 2024),
-            key="slider_tab2"
+            key="slider_tab2",
         )
         
         
