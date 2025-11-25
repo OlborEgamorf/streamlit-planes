@@ -41,34 +41,62 @@ tab0, tab1, tab2, tab3 = st.tabs(["Accueil","Analyse globale", "Analyse explorat
 
 with tab0:
     # Problématique
-    st.markdown("### Problématique Analysée")
-    st.markdown("""
-    L'aviation est un secteur clé de l'économie, mais également un contributeur significatif aux émissions de $\\text{CO}_2$. 
-    Notre analyse vise à répondre à la question suivante :
-    
-    > **Comment les **flux aériens** (vols et passagers) et les **émissions de $\\text{CO}_2$** de l'aviation ont-ils **évolué dans les pays européens** au cours des deux dernières décennies (**2000-2024**), et quels **aéroports** ont été les moteurs de ces changements ?**
-    
-    L'objectif est d'offrir une **vue détaillée et interactive** de la dynamique du transport aérien en Europe pour mieux comprendre ses tendances et ses impacts.
-    """)
-    st.markdown("---")
+    with tab0:
+        st.markdown("### Objectif du projet")
+        st.markdown("""
+        Le transport aérien occupe une place essentielle dans la mobilité européenne, tant pour les passagers que pour le fret.
+        Cependant, il soulève de fortes préoccupations environnementales, notamment en matière d’émissions de **CO₂**.
 
-    # Fonctionnalités
-    st.markdown("### Fonctionnalités et Capacités d'Analyse")
-    st.markdown("""
-    Cette application interactive, développée avec **Streamlit**, vous permet d'explorer les données de l'aviation européenne via deux onglets principaux :
-    
-    * **Accueil (ceci) :** Présentation du projet et de la problématique.
-    * **Analyse globale :** Offre un aperçu macroscopique, comparant un pays sélectionné (par défaut la France) à la moyenne européenne.
-        * **Carte interactive** pour la sélection de pays.
-        * **Évolution des vols** (Arrivées/Départs) dans le temps (Line Chart).
-        * **Top 5 des aéroports** les plus fréquentés par pays (Bar Chart).
-        * **Évolution des émissions de $\\text{CO}_2$** liées à l'aviation (Line Chart).
-    * **Analyse exploratoire :** Permet une plongée détaillée au niveau d'un aéroport spécifique.
-        * **Graphique en double barre** montrant l'évolution des **passagers** (Arrivées/Départs) pour un aéroport sélectionné.
-        * **Graphique en double ligne** montrant l'évolution des **vols** (Arrivées/Départs) pour un aéroport sélectionné.
+        <br>
+
+        **Question centrale :**  
+        > *Comment ont évolué les flux aériens (vols et passagers) et les émissions de CO₂ de l’aviation dans les pays européens depuis l'an 2000, et quels aéroports y contribuent le plus ?*
+        """, unsafe_allow_html=True)
+        st.markdown("---")
+
+        # --- FONCTIONNALITÉS ---
+        st.markdown("### Structure de l’application")
+
+        st.markdown("""
+        L’application comprend **trois pages d’analyse interactive** :
+
+        #### 1) **Analyse globale**
+        > Comparaison d’un pays avec la moyenne européenne  
+        - Carte interactive  
+        - Évolution des **vols (arrivées/départs)**  
+        - Top 5 des **aéroports les plus fréquentés**  
+        - Évolution des **émissions de CO₂**
+
+        #### 2) **Analyse exploratoire**
+        > Analyse approfondie d’un **aéroport spécifique**
+        - Double bar chart : **passagers (arrivées/départs)**
+        - Double line chart : **vols (arrivées/départs)**  
+        - Sélection dynamique : pays, aéroport, période
+
+        #### 3) **Impact environnemental**
+        > Focus sur les pays les plus polluants
+        - Classement des pays selon leurs **émissions de CO₂**
+        - Évolution des passagers pour ces pays
+        - Analyse croisée : pollution ↔ passagers/activité aérienne
+        """)
+
+        st.markdown("---")
+
+        #  --- DONNÉES UTILISÉES ---
+        st.markdown("### Sources des données")
+        st.markdown("""
+        Les données proviennent d’organismes officiels et publiques européens et internationaux :
+        - **Eurostat** : flux aériens, passagers, aéroports  
+            - https://ec.europa.eu/eurostat/databrowser/view/avia_paoc__custom_18234932/bookmark/table?lang=en&bookmarkId=488c528d-6a67-4ca2-a08f-5dfd345b3be1&c=1759309465000
+            - https://ec.europa.eu/eurostat/databrowser/view/avia_paoa__custom_18234960/bookmark/table?lang=en&bookmarkId=5b91d75d-8683-42fd-9449-12d27e7973c0&c=1759309697000
         
-    **Interactivité :** Utilisez les **sliders d'années** et les **selectboxes** (Pays, Aéroports, Arrivées/Départs) pour personnaliser votre exploration.
-    """)
+        - **Our World in Data** : émissions de CO₂  
+            - https://ourworldindata.org/grapher/annual-co-emissions-from-aviation?tableFilter=continents
+        """)
+        
+        st.markdown("---")
+        st.markdown(""" > *Sénécaille Cassandra & Triozon Lucas - Master 2 MIASHS - Open Data - 2025* """)
+        st.markdown("---")
     
 with tab1:
     # Création des deux colonnes
