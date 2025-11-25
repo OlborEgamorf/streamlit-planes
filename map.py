@@ -9,7 +9,7 @@ def displayMap(data, col, country):
     data = data[data["YEAR"] == 2022]
 
     fig = px.choropleth(data, geojson=gpd.read_file("data/europe.geojson"), locations='COUNTRY_ID', color=col,
-                            color_continuous_scale="YlGn",
+                            color_continuous_scale="Blues",
                             labels={"ARRIVAL_VALUE":'Arrivées', "DEPARTURE_VALUE":"Départs"},
                             featureidkey='properties.ISO2'
                             )
@@ -35,7 +35,7 @@ def displayMapAeroport(data, col, country, airports:pd.DataFrame):
     data = data[data["YEAR"] == 2022]
 
     fig = px.choropleth(data, geojson=gpd.read_file("data/europe.geojson"), locations='COUNTRY_ID',
-                            color_continuous_scale="YlGn",
+                            color_continuous_scale="Blues",
                             labels={"ARRIVAL_VALUE":'Arrivées', "DEPARTURE_VALUE":"Départs"},
                             featureidkey='properties.ISO2'
                             )
