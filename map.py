@@ -6,11 +6,16 @@ import plotly.graph_objects as go
 
 def displayMap(data, col, country):
 
-    data = data[data["YEAR"] == 2022]
 
-    fig = px.choropleth(data, geojson=gpd.read_file("data/europe.geojson"), locations='COUNTRY_ID', color=col,
+    data = (
+        data.groupby(["COUNTRY_ID"])[col]
+        .sum()
+        .reset_index(name=f"{col}_SUM")
+    )
+
+    fig = px.choropleth(data, geojson=gpd.read_file("data/europe.geojson"), locations='COUNTRY_ID', color=f"{col}_SUM",
                             color_continuous_scale="Blues",
-                            labels={"ARRIVAL_VALUE":'Arrivées', "DEPARTURE_VALUE":"Départs"},
+                            labels={"ARRIVAL_VALUE_SUM":'Arrivées', "DEPARTURE_VALUE_SUM":"Départs"},
                             featureidkey='properties.ISO2'
                             )
     fig.update_layout({"margin":{"r":0,"t":0,"l":0,"b":0}, "autosize":False})
