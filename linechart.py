@@ -140,6 +140,8 @@ def top_n_line_chart(data, colonne_x, colonne_y="CO2_EMISSIONS_TONNES", top_n=5,
         Nombre de pays à afficher (par défaut 5)
     titre : str (optionnel)
         Titre du graphique
+    color_map : dict (optionnel)
+        Mapping pays → couleur (ex: {"France": "red", "Allemagne": "blue"})
     """
 
     top_n_countries_list = top_N(data, colonne_x, colonne_y, top_n)
@@ -147,18 +149,19 @@ def top_n_line_chart(data, colonne_x, colonne_y="CO2_EMISSIONS_TONNES", top_n=5,
     # Filtrage du DataFrame original pour ne garder que ces pays
     df_top_n = data[data["COUNTRY_NAME"].isin(top_n_countries_list)].sort_values(colonne_x)
 
-    # 2. Création du graphique avec Plotly Express (plus simple pour plusieurs lignes)
+    # Création du graphique avec Plotly Express
     fig = px.line(
         df_top_n,
         x=colonne_x,
         y=colonne_y,
-        color="COUNTRY_NAME", # La couleur et la légende sont gérées par le nom du pays
+        color="COUNTRY_NAME",
         line_group="COUNTRY_NAME",
         markers=True,
-        title=titre or f"Évolution de {colonne_y} pour les Top {top_n} pays les plus émetteurs"
+        title=titre or f"Évolution de {colonne_y} pour les Top {top_n} pays les plus émetteurs",
+        color_discrete_map=color_map 
     )
 
-    # 3. Mise en forme
+    # Mise en forme
     fig.update_layout(
         xaxis_title="Années",
         yaxis_title=colonne_y.replace("_", " ").title(),
@@ -166,12 +169,10 @@ def top_n_line_chart(data, colonne_x, colonne_y="CO2_EMISSIONS_TONNES", top_n=5,
         legend_title="Pays",
         hovermode="x unified"
     )
-    
-    # Améliorer l'apparence des lignes/marqueurs
+
     fig.update_traces(
         line=dict(width=2),
         marker=dict(size=5)
     )
 
-    # 4. Affichage dans Streamlit
     st.plotly_chart(fig)

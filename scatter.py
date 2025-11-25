@@ -55,7 +55,7 @@ def scatterplot(dataX, dataY, pays, colonneX, titre=None):
             marker=dict(
                 size=[12 if el == pays else 8 for el in df["COUNTRY_NAME"]],
                 opacity=[1 if el == pays else 0.2 for el in df["COUNTRY_NAME"]],
-                color=["gold" if el == pays else "cyan" for el in df["COUNTRY_NAME"]],
+                color=["red" if el == pays else "cyan" for el in df["COUNTRY_NAME"]],
                 line=dict(width=0)
             )
         )

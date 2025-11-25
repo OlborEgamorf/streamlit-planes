@@ -136,12 +136,14 @@ def top_n_passagers_barchart_aggregated(
         x="YEAR", 
         y=departure_col, 
         color="COUNTRY_NAME", 
+        color_discrete_map=color_map, 
         title=titre or f"Évolution du Trafic Passagers ({departure_col.replace('_VALUE', '').title()}) des Top {len(liste_pays)} Pays Émetteurs",
         labels={
             "YEAR": "Année",
             departure_col: f"Total Passagers ({departure_col.replace('_VALUE', '').title()})"
         }
     )
+
 
     # 2. Mise en forme
     fig.update_layout(

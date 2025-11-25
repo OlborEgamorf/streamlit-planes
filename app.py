@@ -40,6 +40,11 @@ years_co2 = list(range(2000, 2025))
 # Barre d'onglets
 tab0, tab1, tab2, tab3 = st.tabs(["Accueil","Analyse globale", "Analyse exploratoire", "Impact Environnemental"])
 
+# Récupérer les query params
+params = st.query_params
+current_tab = params.get("tab", ["tab0"])[0]  # par défaut "tab0"
+
+### ---------------- TAB 0 ACCUEIL -------------------------------------------------------
 with tab0:
     # Problématique
     with tab0:
@@ -280,14 +285,13 @@ with tab3:
     # 1. Définition des colonnes (ex: ratio 10:1:10 pour le contenu et le séparateur)
     col1, separator, col2 = st.columns([10, 1, 10]) 
 
-
     # 2. Injection du CSS pour le séparateur
     with separator:
         st.markdown(
             """
             <style>
             .vertical-line {
-                border-left: 0.5px solid #E6DFDF; 
+                border-left: 2px solid rgba(230, 223, 223, 0.5);  /* 0.5 = 50% d'opacité */
                 min-height: 100vh;
                 margin-left: 50%;             
             }
@@ -296,6 +300,7 @@ with tab3:
             """, 
             unsafe_allow_html=True
         )
+
 
     with col1: 
         col3, col4 = st.columns([2, 1])
@@ -320,7 +325,7 @@ with tab3:
                 key="slider_tab3"
             )
         
-       
+    
         # Filtrage des données en fonction de la plage d'années sélectionnée
         filtered_data_co2_env = data_co2_pays[
             (data_co2_pays["YEAR"] >= start_year_env) & (data_co2_pays["YEAR"] <= end_year_env)
@@ -333,19 +338,26 @@ with tab3:
             (data_passagers_pays["YEAR"] >= start_year_env) & (data_passagers_pays["YEAR"] <= end_year_env)
         ]   
         
-   
-        st.markdown(f"## Évolution des émissions de CO₂ des {N_countries} Pays les plus polluants")
-    
-    
         top_countries = top_N(filtered_data_co2_env, "YEAR", "CO2_EMISSIONS_TONNES", N_countries)
+       
+        # Liste des pays à afficher
+        countries_list = top_countries  # Liste de N pays
+
+        # Palette de couleurs
+        colors_palette = px.colors.qualitative.Pastel
+        # Si moins de couleurs que de pays, on répète les couleurs
+        colors_mapping = {country: colors_palette[i % len(colors_palette)] for i, country in enumerate(countries_list)}
+
+        st.markdown(f"## Évolution des émissions de CO₂ des {N_countries} Pays les plus polluants")    
         
         top_n_line_chart(
             filtered_data_co2_env,
             colonne_x="YEAR",
             colonne_y="CO2_EMISSIONS_TONNES",
-            top_n=N_countries
+            top_n=N_countries,
+            color_map=colors_mapping
         )
-    
+
 
     with col2:
         col5, col6 = st.columns([1, 1])
@@ -358,12 +370,16 @@ with tab3:
             )
             column_name_env = "ARRIVAL_VALUE" if departures == "Arrivées" else "DEPARTURE_VALUE"
            
-        
         st.markdown(f"## Évolution des Passagers ({departures}) pour ces pays")
 
         top_n_passagers_barchart_aggregated(
             filtered_data_passagers_env,
             top_countries,
             departure_col=column_name_env,
-            titre=f"Évolution des Passagers ({departures}) des {N_countries} Pays les plus polluants"
+            titre=f"Évolution des Passagers ({departures}) des {N_countries} Pays les plus polluants",
+            color_map=colors_mapping 
         )
+
+
+        
+        
