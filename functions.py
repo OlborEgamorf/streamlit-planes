@@ -90,7 +90,7 @@ def get_name_Pays(data, countryID):
         return None
     
     
-def top_N(data, colonne_x, colonne_y="CO2_EMISSIONS_TONNES", top_n=5, titre=None, color_map=None):
+def top_N(data, colonne_y="CO2_EMISSIONS_TONNES", top_n=5, titre=None, color_map=None):
     """
     
     """

@@ -262,7 +262,7 @@ with tab2:
             (data_vols_aeroport["YEAR"] >= start_year_page2) & (data_vols_aeroport["YEAR"] <= end_year_page2)
         ]
         
-        double_line_chart(filter_data_vols_aeroport, countryIDselect, aeroport=aeroport_name_select, colonne_x="TIME", titre=f"Évolution des Arrivées / Départs (avions) pour {aeroport_name_select}")
+        double_line_chart(filter_data_vols_aeroport, countryIDselect, aeroport=aeroport_name_select, colonne_x="TIME")
         
         
 ### ---------------- TAB 3 IMPACT ENVIRONNEMENTAL -------------------------------------------------------
@@ -331,7 +331,7 @@ with tab3:
             (data_passagers_pays["YEAR"] >= start_year_env) & (data_passagers_pays["YEAR"] <= end_year_env)
         ]   
         
-        top_countries = top_N(filtered_data_co2_env, "YEAR", "CO2_EMISSIONS_TONNES", N_countries)
+        top_countries = top_N(filtered_data_co2_env, "CO2_EMISSIONS_TONNES", N_countries)
        
         # Liste des pays à afficher
         countries_list = top_countries  # Liste de N pays

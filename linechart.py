@@ -90,31 +90,66 @@ def double_line_chart(data, idpays, aeroport, colonne_x, titre=None):
         return 
 
     data_pays = data[data["COUNTRY_ID"] == idpays]
+    data_aero = data_pays[data_pays["AIRPORT_NAME"] == aeroport]
+    lastYear = data_aero.max()["YEAR"]
+
+    data_pays = data_pays.reset_index()
+
+    bestAero = data_pays[
+        data_pays["AIRPORT_NAME"] == data_pays.iloc[
+            data_pays[
+                data_pays["YEAR"] == lastYear
+            ].idxmax()["DEPARTURE_VALUE"]
+        ]["AIRPORT_NAME"]]
+    
+    worstAero = data_pays[
+        data_pays["AIRPORT_NAME"] == data_pays.iloc[
+            data_pays[
+                data_pays["YEAR"] == lastYear
+            ].idxmin()["DEPARTURE_VALUE"]
+        ]["AIRPORT_NAME"]]
+    
+    print(bestAero["YEAR"])
+
     fig = go.Figure()
     # Courbe des arrivées
     fig.add_trace(
         go.Scatter(
-            x=data_pays[data_pays["AIRPORT_NAME"] == aeroport][colonne_x],
-            y=data_pays[data_pays["AIRPORT_NAME"] == aeroport]["ARRIVAL_VALUE"],
+            x=data_aero[colonne_x],
+            y=data_aero["DEPARTURE_VALUE"],
             mode="lines",
-            name="Arrivées",
+            name=aeroport,
             line=dict(color="lightblue", width=2)
         )
     )
     
-    # Courbe des départs
-    fig.add_trace(
-        go.Scatter(
-            x=data_pays[data_pays["AIRPORT_NAME"] == aeroport][colonne_x],
-            y=data_pays[data_pays["AIRPORT_NAME"] == aeroport]["DEPARTURE_VALUE"],
-            mode="lines",
-            name="Départs",
-            line=dict(color="lightcoral", width=2)
+    if bestAero.iloc[0]["AIRPORT_NAME"] != aeroport:
+        # Courbe top 1
+        fig.add_trace(
+            go.Scatter(
+                x=bestAero[colonne_x],
+                y=bestAero["DEPARTURE_VALUE"],
+                mode="lines",
+                name=bestAero.iloc[0]["AIRPORT_NAME"],
+                line=dict(color="lightcoral", width=2)
+            )
         )
-    )
+
+    if worstAero.iloc[0]["AIRPORT_NAME"] != aeroport:
+        # Courbe bottom 1
+        fig.add_trace(
+            go.Scatter(
+                x=worstAero[colonne_x],
+                y=worstAero["DEPARTURE_VALUE"],
+                mode="lines",
+                name=worstAero.iloc[0]["AIRPORT_NAME"],
+                line=dict(color="gold", width=2)
+            )
+        )
+
     # --- Mise en forme ---
     fig.update_layout(
-        title=titre or f"Évolution des Arrivées et Départs pour le pays ID {idpays}",
+        title=titre or f"Évolution du nombre de vols au départ des aéroports suivants",
         xaxis_title="Années",
         yaxis_title="Valeur",
         template="plotly_white",
@@ -147,7 +182,7 @@ def top_n_line_chart(data, colonne_x, colonne_y="CO2_EMISSIONS_TONNES", top_n=5,
         Mapping pays → couleur (ex: {"France": "red", "Allemagne": "blue"})
     """
 
-    top_n_countries_list = top_N(data, colonne_x, colonne_y, top_n)
+    top_n_countries_list = top_N(data, colonne_y, top_n)
 
     # Filtrage du DataFrame original pour ne garder que ces pays
     df_top_n = data[data["COUNTRY_NAME"].isin(top_n_countries_list)].sort_values(colonne_x)
