@@ -22,7 +22,7 @@ def barchart_top_aeroport(data, countryID, departure, top_n=5, titre=None):
 
     print(countryID)
     if countryID is None:
-        st.write("CHOISIR")
+        st.write("Veuillez choisir un pays sur la carte pour commencer à explorer les données.")
     
     else:
         # Obtenir les top N aéroports
@@ -39,7 +39,7 @@ def barchart_top_aeroport(data, countryID, departure, top_n=5, titre=None):
         )
 
         # Afficher le graphique dans Streamlit
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig)
 
 
 def double_barChart(data, countryID, aeroport_name, titre=None):
@@ -105,7 +105,7 @@ def double_barChart(data, countryID, aeroport_name, titre=None):
     )
     
     # 7. Affichage
-    st.plotly_chart(fig, width="stretch")
+    st.plotly_chart(fig)
     
     
 
@@ -156,4 +156,4 @@ def top_n_passagers_barchart_aggregated(
         hovermode="x unified"
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig)

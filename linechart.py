@@ -22,6 +22,9 @@ def line_chart(data, pays, colonne_x, departure, titre=None):
         Titre du graphique
     """
 
+    if pays is None:
+        return
+
     # Filtrage du pays
     df = data[data["COUNTRY_NAME"] == pays]
 
@@ -63,7 +66,7 @@ def line_chart(data, pays, colonne_x, departure, titre=None):
     )
 
     # Affichage dans Streamlit
-    st.plotly_chart(fig, width="stretch")
+    st.plotly_chart(fig)
 
 
 def double_line_chart(data, idpays, aeroport, colonne_x, titre=None):
@@ -116,7 +119,7 @@ def double_line_chart(data, idpays, aeroport, colonne_x, titre=None):
     )
 
     # Affichage dans Streamlit
-    st.plotly_chart(fig, width="stretch")
+    st.plotly_chart(fig)
     
     
     
@@ -171,5 +174,4 @@ def top_n_line_chart(data, colonne_x, colonne_y="CO2_EMISSIONS_TONNES", top_n=5,
     )
 
     # 4. Affichage dans Streamlit
-    st.plotly_chart(fig, use_container_width=True)
-
+    st.plotly_chart(fig)
