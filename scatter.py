@@ -32,8 +32,6 @@ def scatterplot(dataX, dataY, pays, colonneX, titre=None):
         .reset_index(name="VALUE_X")
     )
 
-    print(dataX)
-
     dataY = (
         dataY.groupby(["COUNTRY_NAME"])["CO2_EMISSIONS_TONNES"]
         .sum()
@@ -41,7 +39,6 @@ def scatterplot(dataX, dataY, pays, colonneX, titre=None):
     )
 
     df = pd.merge(dataX, dataY, on=["COUNTRY_NAME"])
-    print(df)
 
     fig = go.Figure()
 

@@ -20,7 +20,6 @@ def barchart_top_aeroport(data, countryID, departure, top_n=5, titre=None):
         Le titre du graphique.
     """
 
-    print(countryID)
     if countryID is None:
         st.write("Veuillez choisir un pays sur la carte pour commencer à explorer les données.")
     
@@ -59,6 +58,11 @@ def double_barChart(data, countryID, aeroport_name, titre=None):
     """
 
     # 1. Filtrer sur le pays et l'aéroport
+
+    if aeroport_name is None:
+        st.write("Veuillez choisir un aéroport sur la carte pour commencer à explorer les données.")
+        return
+    
     airport_data = data[(data["COUNTRY_ID"] == countryID) & 
                         (data["AIRPORT_NAME"] == aeroport_name)]
 

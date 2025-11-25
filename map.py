@@ -4,8 +4,7 @@ import plotly.express as px
 import pandas as pd
 import plotly.graph_objects as go
 
-def displayMap(data, col, country):
-
+def displayMap(data, col):
 
     data = (
         data.groupby(["COUNTRY_ID"])[col]
@@ -13,11 +12,16 @@ def displayMap(data, col, country):
         .reset_index(name=f"{col}_SUM")
     )
 
-    fig = px.choropleth(data, geojson=gpd.read_file("data/europe.geojson"), locations='COUNTRY_ID', color=f"{col}_SUM",
+    fig = px.choropleth(data, 
+                            geojson=gpd.read_file("data/europe.geojson"), 
+                            locations='COUNTRY_ID', 
+                            color=f"{col}_SUM",
                             color_continuous_scale="Blues",
                             labels={"ARRIVAL_VALUE_SUM":'Arrivées', "DEPARTURE_VALUE_SUM":"Départs"},
-                            featureidkey='properties.ISO2'
-                            )
+                            featureidkey='properties.ISO2',
+                            
+    )
+
     fig.update_layout({"margin":{"r":0,"t":0,"l":0,"b":0}, "autosize":False})
     fig.update_geos(fitbounds="locations", visible=False, projection_type="natural earth", bgcolor='rgba(0,0,0,0)') 
 
@@ -28,14 +32,12 @@ def displayMap(data, col, country):
     if points:
         first_point = points[0]
         country = first_point["properties"].get("NAME", None)
+        st.session_state['country'] = country
     else:
-        country = None
-    
-    return country
+        st.session_state['country'] = None
 
 
-
-def displayMapAeroport(data, col, country, airports:pd.DataFrame):
+def displayMapAeroport(data, airports:pd.DataFrame):
 
     data = data[data["YEAR"] == 2022]
 
@@ -64,7 +66,7 @@ def displayMapAeroport(data, col, country, airports:pd.DataFrame):
                 size=8,
                 opacity=0.8
             ),
-            name="Points"
+            name="Points",
         )
     )
 

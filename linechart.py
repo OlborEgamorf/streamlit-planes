@@ -86,6 +86,9 @@ def double_line_chart(data, idpays, aeroport, colonne_x, titre=None):
         Titre du graphique
     """
 
+    if aeroport is None:
+        return 
+
     data_pays = data[data["COUNTRY_ID"] == idpays]
     fig = go.Figure()
     # Courbe des arrivées

@@ -19,10 +19,6 @@ data_passagers_aeroport = pd.read_csv("data/passagers_par_aeroport_traite.csv")
 data_passagers_pays = pd.read_csv("data/passagers_par_pays_traite2.csv")
 data_co2_pays = pd.read_csv("data/co2_par_pays.csv")
 
-# paramètres généraux
-country_name = None
-countryIDPays = get_ID_Pays(data_vols_pays, country_name)
-
 
 # -------------------------------------------------------
 # Settings
@@ -141,10 +137,10 @@ with tab1:
 
     with col1:
 
-        country_name = map.displayMap(filtered_data_vols_pays, column_name_line, country_name)
-        countryIDPays = get_ID_Pays(data_vols_pays, country_name)
+        map.displayMap(filtered_data_vols_pays, column_name_line)
+        countryIDPays = get_ID_Pays(data_vols_pays, st.session_state['country'])
         # On affiche le graphique pour la France VS l'Europe
-        line_chart(filtered_data_vols_pays, country_name, "TIME", column_name_line, f"Évolution des vols pour {country_name}")
+        line_chart(filtered_data_vols_pays, st.session_state['country'], "TIME", column_name_line, f"Évolution des vols pour {st.session_state['country']}")
 
 
     
@@ -184,14 +180,14 @@ with tab1:
             countryIDPays,
             type_data,
             top_n=5,
-            titre=f"Top 5 Aéroports les plus fréquentés en {country_name}"
+            titre=f"Top 5 Aéroports les plus fréquentés en {st.session_state['country']}"
         )       
         
         #line_chart(data_passagers_pays,country_name,"TIME", "ARRIVAL_VALUE" if type_data == "Arrivées" else "DEPARTURE_VALUE",f"Évolution des vols pour {country_name} ({type_data})")
 
         scatterplot(filtered_data_passagers_pays,
                     filtered_data_co2_pays,
-                    country_name,
+                    st.session_state['country'],
                     column_name,
         )
         
@@ -211,12 +207,12 @@ with tab2:
         with col_country:
             countries = data_vols_pays["COUNTRY_NAME"].unique()
             countries.sort()
-            country_name_select = st.selectbox(
+            st.session_state['country'] = st.selectbox(
                 "Sélectionne un pays",
                 options=countries,
-                index=list(countries).index("France")
+                index=list(countries).index(st.session_state['country']) if st.session_state['country'] is not None else None
             )
-            countryIDselect = get_ID_Pays(data_vols_pays, country_name_select)
+            countryIDselect = get_ID_Pays(data_vols_pays, st.session_state['country'])
 
             airportsCountry = data_vols_aeroport[data_vols_aeroport["COUNTRY_ID"] == countryIDselect]["AIRPORT_NAME"].unique()
             airportsCountry.sort()
@@ -229,7 +225,7 @@ with tab2:
             key="slider_tab2",
         )
 
-        indexAirport = map.displayMapAeroport(filtered_data_vols_pays, column_name_line, country_name, airportsCountry)
+        indexAirport = map.displayMapAeroport(filtered_data_vols_pays, airportsCountry)
 
         with col_airport:
 
@@ -241,9 +237,6 @@ with tab2:
 
     # --- PARTIE DROITE : SLIDER + GRAPHIQUE ---
     with col2:        
-        # Slider au-dessus du graphique
-        
-        
         
         # Affichage du graphique en barres des top aéroports pour la France
         data_passagers_aeroport["YEAR"] = data_passagers_aeroport["TIME"].str[:4].astype(int)
