@@ -19,7 +19,7 @@ data_passagers_pays = pd.read_csv("data/passagers_par_pays_traite2.csv")
 data_co2_pays = pd.read_csv("data/co2_par_pays.csv")
 
 # paramètres généraux
-country_name = "France"
+country_name = None
 countryIDPays = get_ID_Pays(data_vols_pays, country_name)
 
 
@@ -136,6 +136,7 @@ with tab1:
     with col1:
 
         country_name = map.displayMap(filtered_data_vols_pays, column_name_line, country_name)
+        countryIDPays = get_ID_Pays(data_vols_pays, country_name)
         # On affiche le graphique pour la France VS l'Europe
         line_chart(filtered_data_vols_pays, country_name, "TIME", column_name_line, f"Évolution des vols pour {country_name}")
 
@@ -185,24 +186,36 @@ with tab1:
 ### ---------------- TAB 2 ANALYSE EXPLORATOIRE -------------------------------------------------------    
 with tab2:
     col1, col2 = st.columns([1, 1])
+
+    
     
     with col2:
          # Crée deux colonnes pour les selectboxes
         col_country, col_airport = st.columns(2)
 
         with col_country:
+            countries = data_vols_pays["COUNTRY_NAME"].unique()
+            countries.sort()
             country_name_select = st.selectbox(
                 "Sélectionne un pays",
-                options=data_vols_pays["COUNTRY_NAME"].unique(),
-                index=list(data_vols_pays["COUNTRY_NAME"].unique()).index("France")
+                options=countries,
+                index=list(countries).index("France")
             )
             countryIDselect = get_ID_Pays(data_vols_pays, country_name_select)
 
+            airportsCountry = data_vols_aeroport[data_vols_aeroport["COUNTRY_ID"] == countryIDselect]["AIRPORT_NAME"].unique()
+            airportsCountry.sort()
+
+    with col1:
+        indexAirport = map.displayMapAeroport(filtered_data_vols_pays, column_name_line, country_name, airportsCountry)
+
+    with col2:
         with col_airport:
+
             aeroport_name_select = st.selectbox(
                 "Sélectionne un aéroport",
-                options=data_vols_aeroport[data_vols_aeroport["COUNTRY_ID"] == countryIDselect]["AIRPORT_NAME"].unique(),
-                index=0
+                options=airportsCountry,
+                index=indexAirport
             )
         
 
@@ -234,11 +247,8 @@ with tab2:
         )
     
     with col1:
-        data = pd.DataFrame({
-            'lat': [48.8566, 52.5200, 41.9028, 40.4168],  # Paris, Berlin, Rome, Madrid
-            'lon': [2.3522, 13.4050, 12.4964, -3.7038]
-        })
-        st.map(data, zoom=2.5)
+
+        
         
         # Affichage du graphique en barres des top aéroports pour la France
         data_vols_aeroport["YEAR"] = data_vols_aeroport["TIME"].str[:4].astype(int)
