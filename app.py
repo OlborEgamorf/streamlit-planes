@@ -72,7 +72,7 @@ with tab0:
         #### 2) **Analyse exploratoire**
         > Analyse approfondie d’un **aéroport spécifique**
         - Double bar chart : **passagers (arrivées/départs)**
-        - Double line chart : **vols (arrivées/départs)**  
+        - Triple line chart : **Comparaisons entre l'aéroport sélectionné, le pays le plus visité et celui le moins visité**  
         - Sélection dynamique : pays, aéroport, période
 
         #### 3) **Impact environnemental**
